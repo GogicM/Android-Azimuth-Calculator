@@ -57,8 +57,7 @@ public class MainActivity extends AppCompatActivity  implements SensorEventListe
         sensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
         sensorAccelerometer = sensorManager.getDefaultSensor(
                 Sensor.TYPE_ROTATION_VECTOR);
-
-        try{
+        try {
             mCamera = Camera.open();
 
         } catch(Exception e) {
@@ -70,12 +69,10 @@ public class MainActivity extends AppCompatActivity  implements SensorEventListe
             camera_view.addView(cameraView);
         }
         ImageButton imgX = (ImageButton) findViewById(R.id.imgX);
-
     }
 
     @Override
     protected void onPause() {
-
         super.onPause();
         sensorManager.unregisterListener(this);
     }
@@ -91,43 +88,26 @@ public class MainActivity extends AppCompatActivity  implements SensorEventListe
     @Override
     public void onAccuracyChanged(Sensor arg0, int arg1) {
         // TODO Auto-generated method stub
-
     }
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-
-    /*
-     * event.values[0]: azimuth, rotation around the Z axis.
-    * event.values[1]: pitch, rotation around the X axis.
-    * event.values[2]: roll, rotation around the Y axis.
-    */
-
         int azimuth = 0;
         float[] mRotationMatrix = new float[9];
         float[] orientationVals = new float[3];
         SensorManager.getRotationMatrixFromVector(mRotationMatrix,
                 event.values);
         float orientation = (float) Math.acos(mRotationMatrix[8]);
-       // if(orientation > Math.toRadians(FORTY_FIVE_DEGREES_IN_RADIAN)
-        //        || orientation < Math.toRadians(ONE_THIRTY_FIVE_DEGREES_IN_RADIAN)) {
 
-       //     SensorManager.getOrientation(mRotationMatrix, orientationVals);
-
-       // } else {
-
-            SensorManager.remapCoordinateSystem(mRotationMatrix,
+        SensorManager.remapCoordinateSystem(mRotationMatrix,
                     SensorManager.AXIS_X, SensorManager.AXIS_Z,
                     mRotationMatrix);
-            SensorManager.getOrientation(mRotationMatrix, orientationVals);
-       //    }
+        SensorManager.getOrientation(mRotationMatrix, orientationVals);
         orientationVals[0] = (float) Math.toDegrees(orientationVals[0]);
         azimuth = Math.round(orientationVals[0]);
         if(azimuth < 0) {
             azimuth += 360;
         }
         tv.setText(String.valueOf(azimuth));
-
-
     }
 }
